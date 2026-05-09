@@ -46,7 +46,7 @@ def safe_int(value, default=0):
 @st.cache_data
 def load_data():
 
-    df = pd.read_csv("feature_store/sample_feature_store.csv.csv")
+    df = pd.read_csv("feature_store/sample_feature_store.csv")
 
     numeric_cols = [
         "yearly_income",
