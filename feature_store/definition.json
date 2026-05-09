@@ -4,6 +4,60 @@
     "definition": "Unique identifier for each customer"
   },
   {
+    "column": "current_age",
+    "definition": "Current age of the customer"
+  },
+  {
+    "column": "retirement_age",
+    "definition": "Expected retirement age of the customer"
+  },
+  {
+    "column": "birth_year",
+    "definition": "Year of birth of the customer"
+  },
+  {
+    "column": "birth_month",
+    "definition": "Month of birth of the customer"
+  },
+  {
+    "column": "gender",
+    "definition": "Gender of the customer"
+  },
+  {
+    "column": "address",
+    "definition": "Customer residential address"
+  },
+  {
+    "column": "latitude",
+    "definition": "Geographic latitude of customer location"
+  },
+  {
+    "column": "longitude",
+    "definition": "Geographic longitude of customer location"
+  },
+
+  {
+    "column": "per_capita_income",
+    "definition": "Income per person in household"
+  },
+  {
+    "column": "yearly_income",
+    "definition": "Total yearly income of customer"
+  },
+  {
+    "column": "total_debt",
+    "definition": "Total outstanding debt of customer"
+  },
+  {
+    "column": "credit_score",
+    "definition": "Creditworthiness score of customer"
+  },
+  {
+    "column": "num_credit_cards",
+    "definition": "Number of credit cards owned"
+  },
+
+  {
     "column": "avg_monthly_inflow",
     "definition": "Average monthly incoming money amount"
   },
@@ -31,13 +85,14 @@
     "column": "avg_active_days_per_month",
     "definition": "Average active transaction days monthly"
   },
+
   {
     "column": "avg_inflow_amount",
     "definition": "Average incoming transaction amount"
   },
   {
     "column": "median_inflow_amount",
-    "definition": "Middle value of incoming transactions"
+    "definition": "Median incoming transaction amount"
   },
   {
     "column": "max_inflow_amount",
@@ -51,13 +106,14 @@
     "column": "std_inflow_amount",
     "definition": "Variation in incoming transaction amounts"
   },
+
   {
     "column": "avg_outflow_amount",
     "definition": "Average spending transaction amount"
   },
   {
     "column": "median_outflow_amount",
-    "definition": "Middle value of spending transactions"
+    "definition": "Median spending transaction amount"
   },
   {
     "column": "max_outflow_amount",
@@ -71,6 +127,7 @@
     "column": "std_outflow_amount",
     "definition": "Variation in spending transaction amounts"
   },
+
   {
     "column": "account_age_days",
     "definition": "Customer account age in days"
@@ -83,6 +140,7 @@
     "column": "avg_transactions_per_month",
     "definition": "Average transactions each month"
   },
+
   {
     "column": "night_transaction_ratio",
     "definition": "Share of nighttime transactions"
@@ -91,6 +149,7 @@
     "column": "weekend_transaction_ratio",
     "definition": "Share of weekend transactions"
   },
+
   {
     "column": "spending_growth_rate",
     "definition": "Recent spending increase trend"
@@ -99,6 +158,7 @@
     "column": "income_growth_rate",
     "definition": "Recent income increase trend"
   },
+
   {
     "column": "avg_monthly_net_cashflow",
     "definition": "Monthly income minus spending"
@@ -111,6 +171,7 @@
     "column": "savings_ratio",
     "definition": "Income kept after spending"
   },
+
   {
     "column": "favorite_mcc",
     "definition": "Most frequent spending category"
@@ -131,6 +192,7 @@
     "column": "merchant_diversity_score",
     "definition": "Variety of merchant usage"
   },
+
   {
     "column": "recency_days",
     "definition": "Days since latest transaction"
@@ -143,6 +205,7 @@
     "column": "monetary",
     "definition": "Total transaction value"
   },
+
   {
     "column": "fraud_transaction_count",
     "definition": "Number of fraudulent transactions"
@@ -152,9 +215,68 @@
     "definition": "Percentage of fraudulent transactions"
   },
   {
-    "column": "avg_fraud_amount",
-    "definition": "Average fraudulent transaction amount"
+    "column": "avg_fraud_amount_x",
+    "definition": "Average fraudulent transaction amount (source X)"
   },
+  {
+    "column": "avg_fraud_amount_y",
+    "definition": "Average fraudulent transaction amount (source Y)"
+  },
+
+  {
+    "column": "bad_cvv_count",
+    "definition": "Number of invalid CVV attempts"
+  },
+  {
+    "column": "bad_card_number_count",
+    "definition": "Number of invalid card number attempts"
+  },
+  {
+    "column": "bad_expiration_count",
+    "definition": "Number of invalid card expiration attempts"
+  },
+  {
+    "column": "bad_pin_count",
+    "definition": "Number of invalid PIN attempts"
+  },
+  {
+    "column": "bad_zipcode_count",
+    "definition": "Number of invalid zipcode entries"
+  },
+  {
+    "column": "insufficient_balance_count",
+    "definition": "Number of failed transactions due to insufficient balance"
+  },
+  {
+    "column": "technical_glitch_count",
+    "definition": "Number of failed transactions due to system error"
+  },
+  {
+    "column": "total_error_count",
+    "definition": "Total number of transaction errors"
+  },
+  {
+    "column": "error_ratio",
+    "definition": "Ratio of failed transactions to total transactions"
+  },
+
+  {
+    "column": "auth_error_count",
+    "definition": "Number of authentication-related errors"
+  },
+  {
+    "column": "auth_error_ratio",
+    "definition": "Proportion of authentication errors"
+  },
+  {
+    "column": "insufficient_balance_ratio",
+    "definition": "Proportion of insufficient balance failures"
+  },
+  {
+    "column": "technical_glitch_ratio",
+    "definition": "Proportion of system-related failures"
+  },
+
   {
     "column": "avg_transactions_per_day",
     "definition": "Average daily transaction count"
@@ -167,6 +289,7 @@
     "column": "max_transactions_per_hour",
     "definition": "Highest hourly transaction count"
   },
+
   {
     "column": "travel_score",
     "definition": "Travel-related spending tendency"
@@ -183,6 +306,7 @@
     "column": "luxury_score",
     "definition": "Luxury spending tendency"
   },
+
   {
     "column": "days_since_last_transaction",
     "definition": "Days since last activity"
