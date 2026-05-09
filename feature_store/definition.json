@@ -1,0 +1,198 @@
+[
+  {
+    "column": "client_id",
+    "definition": "Unique identifier for each customer"
+  },
+  {
+    "column": "avg_monthly_inflow",
+    "definition": "Average monthly incoming money amount"
+  },
+  {
+    "column": "avg_monthly_outflow",
+    "definition": "Average monthly spending amount"
+  },
+  {
+    "column": "monthly_inflow_std",
+    "definition": "Variation of monthly incoming money"
+  },
+  {
+    "column": "monthly_outflow_std",
+    "definition": "Variation of monthly spending behavior"
+  },
+  {
+    "column": "max_monthly_outflow",
+    "definition": "Highest monthly spending recorded"
+  },
+  {
+    "column": "avg_monthly_transactions",
+    "definition": "Average monthly transaction count"
+  },
+  {
+    "column": "avg_active_days_per_month",
+    "definition": "Average active transaction days monthly"
+  },
+  {
+    "column": "avg_inflow_amount",
+    "definition": "Average incoming transaction amount"
+  },
+  {
+    "column": "median_inflow_amount",
+    "definition": "Middle value of incoming transactions"
+  },
+  {
+    "column": "max_inflow_amount",
+    "definition": "Largest incoming transaction amount"
+  },
+  {
+    "column": "min_inflow_amount",
+    "definition": "Smallest incoming transaction amount"
+  },
+  {
+    "column": "std_inflow_amount",
+    "definition": "Variation in incoming transaction amounts"
+  },
+  {
+    "column": "avg_outflow_amount",
+    "definition": "Average spending transaction amount"
+  },
+  {
+    "column": "median_outflow_amount",
+    "definition": "Middle value of spending transactions"
+  },
+  {
+    "column": "max_outflow_amount",
+    "definition": "Largest spending transaction amount"
+  },
+  {
+    "column": "min_outflow_amount",
+    "definition": "Smallest spending transaction amount"
+  },
+  {
+    "column": "std_outflow_amount",
+    "definition": "Variation in spending transaction amounts"
+  },
+  {
+    "column": "account_age_days",
+    "definition": "Customer account age in days"
+  },
+  {
+    "column": "active_month_count",
+    "definition": "Total months with transactions"
+  },
+  {
+    "column": "avg_transactions_per_month",
+    "definition": "Average transactions each month"
+  },
+  {
+    "column": "night_transaction_ratio",
+    "definition": "Share of nighttime transactions"
+  },
+  {
+    "column": "weekend_transaction_ratio",
+    "definition": "Share of weekend transactions"
+  },
+  {
+    "column": "spending_growth_rate",
+    "definition": "Recent spending increase trend"
+  },
+  {
+    "column": "income_growth_rate",
+    "definition": "Recent income increase trend"
+  },
+  {
+    "column": "avg_monthly_net_cashflow",
+    "definition": "Monthly income minus spending"
+  },
+  {
+    "column": "spend_income_ratio",
+    "definition": "Spending compared to income"
+  },
+  {
+    "column": "savings_ratio",
+    "definition": "Income kept after spending"
+  },
+  {
+    "column": "favorite_mcc",
+    "definition": "Most frequent spending category"
+  },
+  {
+    "column": "unique_mcc_count",
+    "definition": "Number of spending categories used"
+  },
+  {
+    "column": "unique_merchant_count",
+    "definition": "Number of different merchants used"
+  },
+  {
+    "column": "favorite_merchant",
+    "definition": "Most frequently used merchant"
+  },
+  {
+    "column": "merchant_diversity_score",
+    "definition": "Variety of merchant usage"
+  },
+  {
+    "column": "recency_days",
+    "definition": "Days since latest transaction"
+  },
+  {
+    "column": "frequency",
+    "definition": "Total number of transactions"
+  },
+  {
+    "column": "monetary",
+    "definition": "Total transaction value"
+  },
+  {
+    "column": "fraud_transaction_count",
+    "definition": "Number of fraudulent transactions"
+  },
+  {
+    "column": "fraud_ratio",
+    "definition": "Percentage of fraudulent transactions"
+  },
+  {
+    "column": "avg_fraud_amount",
+    "definition": "Average fraudulent transaction amount"
+  },
+  {
+    "column": "avg_transactions_per_day",
+    "definition": "Average daily transaction count"
+  },
+  {
+    "column": "max_transactions_per_day",
+    "definition": "Highest daily transaction count"
+  },
+  {
+    "column": "max_transactions_per_hour",
+    "definition": "Highest hourly transaction count"
+  },
+  {
+    "column": "travel_score",
+    "definition": "Travel-related spending tendency"
+  },
+  {
+    "column": "dining_score",
+    "definition": "Dining-related spending tendency"
+  },
+  {
+    "column": "digital_score",
+    "definition": "Digital shopping spending tendency"
+  },
+  {
+    "column": "luxury_score",
+    "definition": "Luxury spending tendency"
+  },
+  {
+    "column": "days_since_last_transaction",
+    "definition": "Days since last activity"
+  },
+  {
+    "column": "essential_spend_ratio",
+    "definition": "Spending on essential needs"
+  },
+  {
+    "column": "customer_value_score",
+    "definition": "Estimated overall customer value"
+  }
+]
