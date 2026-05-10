@@ -173,7 +173,6 @@ Rules:
 - No markdown
 - No explanation outside JSON
 - Summary MUST be 200-250 words
-- Summary MUST contain at least 200 words
 - Provide detailed customer behavior analysis
 - Include transaction habits, financial patterns, fraud signals, and actionable business insights
 - Highlight unique customer characteristics
@@ -191,7 +190,8 @@ Rules:
 - If no data, do not assume
 
 IMPORTANT:
-Responses with summaries below 200 words are invalid.
+Ensure JSON is complete and properly closed.
+Do not truncate output.
 
 """
 
