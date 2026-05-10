@@ -25,7 +25,8 @@ def load_llm():
     # Pastikan kamu sudah memasukkan GROQ_API_KEY di Streamlit Secrets atau .env
     # Jika menjalankan lokal tanpa secrets, ganti st.secrets dengan string API Key kamu
     
-    api_key = st.secrets["GROQ_API_KEY"]
+    # api_key = st.secrets["GROQ_API_KEY"]
+    api_key = "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"
 
     return ChatGroq(
         groq_api_key=api_key,
@@ -154,7 +155,7 @@ IMPORTANT_FEATURES = [
 def generate_ai_insight(client_id, customer_data):
 
     prompt = f"""
-You are a senior banking analyst. 
+You are an expert banking analyst. 
 Review the following customer data and return your analysis in JSON format.
 
 Customer data:
@@ -169,15 +170,23 @@ Schema:
 }}
 
 Rules:
+- Output JSON only
 - No markdown
 - No explanation outside JSON
-- Summary 150 - 200 words, insightful and will be actionable
+- Summary MUST be 200-250 words
+- Summary MUST contain at least 200 words
+- Provide detailed customer behavior analysis
+- Include transaction habits, financial patterns, fraud signals, and actionable business insights
+- Highlight unique customer characteristics
 - Max 5 personas
 - Max 5 recommendations
-- Each recommendation must be under 50 characters
+- Each recommendation under 50 characters
+- Fraud risk explanation max 70 words
 - Use only provided data
-- Explain fraud risk briefly in summary
-- if no data, do not assume.
+- If no data, do not assume
+
+IMPORTANT:
+Responses with summaries below 200 words are invalid.
 
 """
 
@@ -563,7 +572,7 @@ st.subheader("💬 Banking AI Assistant")
 question = st.text_input("Ask about this customer", placeholder="e.g. Is this customer eligible for a credit increase?")
 
 if st.button("Analyze") and question:
-    chat_prompt = f"Customer data: {json.dumps(customer_data)}\n\nQuestion: {question}\n\nAnswer shortly and professionally."
+    chat_prompt = f"Customer data: {json.dumps(customer_data)}\n\nQuestion: {question}\n\nAnswer shortly and professionally. Always give recommendations from your answer. do not assume."
     with st.spinner("Thinking..."):
         try:
             # Menggunakan .content untuk mendapatkan string teks
