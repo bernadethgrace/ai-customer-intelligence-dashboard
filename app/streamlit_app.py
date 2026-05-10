@@ -24,14 +24,14 @@ st.title("🤖 AI Customer Intelligence Dashboard")
 def load_llm():
     # Pastikan kamu sudah memasukkan GROQ_API_KEY di Streamlit Secrets atau .env
     # Jika menjalankan lokal tanpa secrets, ganti st.secrets dengan string API Key kamu
-    try:
-        api_key = st.secrets["GROQ_API_KEY"]
-    except:
-        # Fallback untuk running lokal jika lupa setting secrets
-    
+    @st.cache_resource
+def load_llm():
+
+    api_key = st.secrets["GROQ_API_KEY"]
+
     return ChatGroq(
         groq_api_key=api_key,
-        model_name="llama-3.1-8b-instant", # Llama 3 sangat cepat dan cerdas untuk analisis data
+        model_name="llama-3.1-8b-instant",
         temperature=0
     )
 
