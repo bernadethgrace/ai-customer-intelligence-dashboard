@@ -25,8 +25,7 @@ def load_llm():
     # Pastikan kamu sudah memasukkan GROQ_API_KEY di Streamlit Secrets atau .env
     # Jika menjalankan lokal tanpa secrets, ganti st.secrets dengan string API Key kamu
     
-    # api_key = st.secrets["GROQ_API_KEY"]
-    api_key = "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"
+    api_key = st.secrets["GROQ_API_KEY"]
 
     return ChatGroq(
         groq_api_key=api_key,
