@@ -181,6 +181,12 @@ Rules:
 - Max 5 recommendations
 - Each recommendation under 50 characters
 - Fraud risk explanation max 70 words
+- NEVER repeat raw numeric metrics as labels in summary (e.g., scores, IDs, values)
+- Always translate numerical indicators into business insight or behavioral interpretation
+- If a metric is provided, interpret its meaning instead of restating it
+- Convert all quantitative features into qualitative insights
+- Focus on “what it means” rather than “what the value is”
+- Prefer business interpretation over data reporting
 - Use only provided data
 - If no data, do not assume
 
