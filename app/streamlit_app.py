@@ -171,12 +171,12 @@ Schema:
 Rules:
 - No markdown
 - No explanation outside JSON
-- Summary max 200 words, insightful
+- Summary 150 - 200 words, insightful and will be actionable
 - Max 5 personas
 - Max 5 recommendations
 - Each recommendation must be under 50 characters
 - Use only provided data
-- Explain fraud risk briefly
+- Explain fraud risk briefly in summary
 - if no data, do not assume.
 
 """
