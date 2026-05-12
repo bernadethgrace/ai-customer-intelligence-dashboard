@@ -675,11 +675,11 @@ fraud_ratio = safe_float(
     )
 )
 
-if fraud_ratio >= 0.01:
+if fraud_ratio >= 0.05:
     fraud_status = "🚨 HIGH RISK"
     color = "#FF4B4B"
 
-elif fraud_ratio >= 0.003:
+elif fraud_ratio >= 0.01:
     fraud_status = "⚠️ MEDIUM RISK"
     color = "#FFA500"
 
