@@ -8,3 +8,4 @@ __pycache__/
 *.pyc
 logs.log
 drafts/
+app/app_test.py
