@@ -675,17 +675,17 @@ fraud_ratio = safe_float(
     )
 )
 
-fraud_status = (
-    "⚠️ HIGH RISK"
-    if fraud_ratio > 0.05
-    else "✅ LOW RISK"
-)
+if fraud_ratio >= 0.01:
+    fraud_status = "🚨 HIGH RISK"
+    color = "#FF4B4B"
 
-color = (
-    "#FF4B4B"
-    if fraud_ratio > 0.05
-    else "#00CC96"
-)
+elif fraud_ratio >= 0.003:
+    fraud_status = "⚠️ MEDIUM RISK"
+    color = "#FFA500"
+
+else:
+    fraud_status = "✅ LOW RISK"
+    color = "#00CC96"
 
 f1.markdown(
     f"### Status: <span style='color:{color}'>{fraud_status}</span>",

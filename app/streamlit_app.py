@@ -460,8 +460,17 @@ st.header("🚨 Fraud & Risk Behavior Analysis")
 # 1. KPI Top Row (Status & Primary Metrics)
 f1, f2, f3 = st.columns(3)
 fraud_ratio = safe_float(client_row.get('fraud_ratio', 0))
-fraud_status = "⚠️ HIGH RISK" if fraud_ratio > 0.05 else "✅ LOW RISK"
-color = "#FF4B4B" if fraud_ratio > 0.05 else "#00CC96"
+if fraud_ratio >= 0.01:
+    fraud_status = "🚨 HIGH RISK"
+    color = "#FF4B4B"
+
+elif fraud_ratio >= 0.003:
+    fraud_status = "⚠️ MEDIUM RISK"
+    color = "#FFA500"
+
+else:
+    fraud_status = "✅ LOW RISK"
+    color = "#00CC96"
 
 f1.markdown(f"### Status: <span style='color:{color}'>{fraud_status}</span>", unsafe_allow_html=True)
 f2.metric(
