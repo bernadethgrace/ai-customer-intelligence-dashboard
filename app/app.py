@@ -17,11 +17,14 @@ st.set_page_config(
 st.title("🤖 AI Customer Intelligence Dashboard")
 
 # =========================================
-# LOAD LLM
+# LOAD LLM (OLLAMA VERSION)
 # =========================================
 @st.cache_resource
 def load_llm():
-    return OllamaLLM(model="phi3")
+
+    return OllamaLLM(
+        model="phi3"
+    )
 
 llm = load_llm()
 
@@ -34,11 +37,13 @@ def safe_float(value, default=0):
     except:
         return default
 
+
 def safe_int(value, default=0):
     try:
         return int(float(value))
     except:
         return default
+
 
 # =========================================
 # LOAD DATA
@@ -46,7 +51,9 @@ def safe_int(value, default=0):
 @st.cache_data
 def load_data():
 
-    df = pd.read_csv("feature_store/sample_feature_store.csv")
+    df = pd.read_csv(
+        "feature_store/sample_feature_store.csv"
+    )
 
     numeric_cols = [
         "yearly_income",
@@ -75,13 +82,16 @@ def load_data():
     ]
 
     for col in numeric_cols:
+
         if col in df.columns:
+
             df[col] = pd.to_numeric(
                 df[col],
                 errors="coerce"
             ).fillna(0)
 
     return df
+
 
 client_feature_store = load_data()
 
@@ -90,11 +100,24 @@ client_feature_store = load_data()
 # =========================================
 @st.cache_data
 def load_definitions():
+
     try:
-        with open("feature_store/definition.json", "r") as f:
-            return pd.DataFrame(json.load(f))
+
+        with open(
+            "feature_store/definition.json",
+            "r"
+        ) as f:
+
+            return pd.DataFrame(
+                json.load(f)
+            )
+
     except:
-        return pd.DataFrame(columns=["column", "definition"])
+
+        return pd.DataFrame(
+            columns=["column", "definition"]
+        )
+
 
 definition_df = load_definitions()
 
@@ -102,28 +125,76 @@ definition_df = load_definitions()
 # IMPORTANT FEATURES
 # =========================================
 IMPORTANT_FEATURES = [
+
+    # =========================
+    # 💰 Financial Behavior
+    # =========================
+    "yearly_income",
+    "total_debt",
+    "credit_score",
+    "spend_income_ratio",
+    "savings_ratio",
+    "avg_monthly_net_cashflow",
+
+    # =========================
+    # 📊 Spending Pattern
+    # =========================
     "avg_monthly_inflow",
     "avg_monthly_outflow",
-    "spend_income_ratio",
-    "fraud_ratio",
-    "travel_score",
-    "digital_score",
-    "night_transaction_ratio",
-    "merchant_diversity_score",
     "avg_monthly_transactions",
     "avg_active_days_per_month",
+    "merchant_diversity_score",
+    "night_transaction_ratio",
+    "weekend_transaction_ratio",
+
+    # =========================
+    # 🚨 Fraud & Risk Signals
+    # =========================
+    "fraud_ratio",
+    "fraud_transaction_count",
+    "total_error_count",
+    "error_ratio",
+    "bad_cvv_count",
+    "bad_card_number_count",
+    "insufficient_balance_count",
+    "technical_glitch_count",
+
+    # =========================
+    # 🧠 Behavioral Persona
+    # =========================
+    "travel_score",
+    "digital_score",
+    "dining_score",
+    "luxury_score",
+    "essential_spend_ratio",
+
+    # =========================
+    # 📈 Trend / Stability
+    # =========================
+    "spending_growth_rate",
+    "income_growth_rate",
+    "account_age_days",
+    "customer_value_score"
 ]
 
 # =========================================
 # AI ENGINE
 # =========================================
 @st.cache_data(show_spinner=False)
-def generate_ai_insight(client_id, customer_data):
+def generate_ai_insight(
+    client_id,
+    customer_data
+):
 
     prompt = f"""
-You are a senior banking analyst.
+You are an expert banking analyst.
 
-You MUST return ONLY valid JSON.
+Review the following customer data and return your analysis in JSON format.
+
+Customer data:
+{json.dumps(customer_data)}
+
+You MUST return ONLY valid JSON with exactly this schema:
 
 Schema:
 {{
@@ -133,17 +204,26 @@ Schema:
 }}
 
 Rules:
+- Output JSON only
 - No markdown
 - No explanation outside JSON
-- Summary 200 - 300 words
+- Summary MUST be 200-250 words
+- Provide detailed customer behavior analysis
+- Include transaction habits, financial patterns, fraud signals, and actionable business insights
+- Highlight unique customer characteristics
 - Max 5 personas
 - Max 5 recommendations
-- Each recommendation must be under 100 characters
+- Each recommendation under 50 characters
+- Fraud risk explanation max 70 words
+- NEVER repeat raw numeric metrics as labels in summary
+- Always translate numerical indicators into business insight
+- Focus on what the data means
 - Use only provided data
-- Explain fraud risk briefly
+- If no data, do not assume
 
-Customer data:
-{json.dumps(customer_data)}
+IMPORTANT:
+Ensure JSON is complete and properly closed.
+Do not truncate output.
 """
 
     try:
@@ -151,14 +231,25 @@ Customer data:
         response = llm.invoke(prompt)
 
         if not response:
-            raise Exception("Empty LLM response")
+            raise Exception(
+                "Empty response from Ollama"
+            )
 
         response = str(response).strip()
 
-        response = response.replace("```json", "")
-        response = response.replace("```", "")
+        response = response.replace(
+            "```json",
+            ""
+        ).replace(
+            "```",
+            ""
+        )
 
-        match = re.search(r"\{.*\}", response, re.DOTALL)
+        match = re.search(
+            r"\{.*\}",
+            response,
+            re.DOTALL
+        )
 
         if match:
             response = match.group(0)
@@ -166,38 +257,63 @@ Customer data:
         parsed = json.loads(response)
 
         return {
-            "summary": parsed.get("summary", ""),
-            "personas": parsed.get("personas", []),
-            "recommendations": parsed.get("recommendations", [])
+            "summary": parsed.get(
+                "summary",
+                ""
+            ),
+            "personas": parsed.get(
+                "personas",
+                []
+            ),
+            "recommendations": parsed.get(
+                "recommendations",
+                []
+            )
         }
 
     except Exception as e:
 
         return {
+
             "summary": f"""
-            Customer shows moderate banking activity with digital transaction behavior.
-            Fraud analysis could not be fully generated due to model formatting issue.
-            System fallback activated.
-            Error: {str(e)}
-            """,
+Analysis unavailable.
+
+Model encountered formatting issue while generating insight.
+
+Fallback system activated.
+
+Error:
+{str(e)}
+""",
+
             "personas": [
-                "Digital Banking User"
+                "Digital Banking User",
+                "Moderate Financial Activity"
             ],
+
             "recommendations": [
-                "Monitor transaction behavior regularly",
-                "Offer personalized banking products"
+                "Review customer manually",
+                "Monitor fraud indicators",
+                "Offer digital banking products"
             ]
         }
+
 
 # =========================================
 # RAW TABLE BUILDER
 # =========================================
 @st.cache_data
-def build_raw_table(client_row, definition_df):
+def build_raw_table(
+    client_row,
+    definition_df
+):
 
     df = client_row.to_frame().reset_index()
 
-    df.columns = ["Feature", "Value"]
+    df.columns = [
+        "Feature",
+        "Value"
+    ]
 
     df = df.merge(
         definition_df,
@@ -207,16 +323,29 @@ def build_raw_table(client_row, definition_df):
     )
 
     return df[
-        ["Feature", "Value", "definition"]
-    ].rename(columns={"definition": "Definition"})
+        [
+            "Feature",
+            "Value",
+            "definition"
+        ]
+    ].rename(
+        columns={
+            "definition": "Definition"
+        }
+    )
+
 
 # =========================================
 # SIDEBAR
 # =========================================
-st.sidebar.header("Customer Selection")
+st.sidebar.header(
+    "Customer Selection"
+)
 
 client_ids = sorted(
-    client_feature_store["client_id"].astype(str).unique()
+    client_feature_store[
+        "client_id"
+    ].astype(str).unique()
 )
 
 selected_client = st.sidebar.selectbox(
@@ -225,16 +354,22 @@ selected_client = st.sidebar.selectbox(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.write("This project is intended for educational, portfolio, and technical assessment purposes.")
+
+st.sidebar.write(
+    "This project is intended for educational, portfolio, and technical assessment purposes."
+)
 
 # =========================================
 # GET CLIENT DATA
 # =========================================
 filtered = client_feature_store[
-    client_feature_store["client_id"].astype(str) == str(selected_client)
+    client_feature_store[
+        "client_id"
+    ].astype(str) == str(selected_client)
 ]
 
 if filtered.empty:
+
     st.error("Client not found")
     st.stop()
 
@@ -246,8 +381,12 @@ client_row = filtered.iloc[0]
 customer_data = {}
 
 for col in IMPORTANT_FEATURES:
+
     if col in client_row.index:
-        customer_data[col] = safe_float(client_row[col])
+
+        customer_data[col] = safe_float(
+            client_row[col]
+        )
 
 # =========================================
 # SESSION STATE
@@ -259,40 +398,79 @@ if (
 
     st.session_state.client = selected_client
 
-    with st.spinner("Generating AI insight..."):
+    with st.spinner(
+        "Generating AI insight..."
+    ):
 
-        st.session_state.ai_result = generate_ai_insight(
-            selected_client,
-            customer_data
+        st.session_state.ai_result = (
+            generate_ai_insight(
+                selected_client,
+                customer_data
+            )
         )
 
 ai_result = st.session_state.ai_result
 
-summary = ai_result.get("summary", "")
-personas = ai_result.get("personas", [])
-recommendations = ai_result.get("recommendations", [])
+summary = ai_result.get(
+    "summary",
+    ""
+)
+
+personas = ai_result.get(
+    "personas",
+    []
+)
+
+recommendations = ai_result.get(
+    "recommendations",
+    []
+)
 
 # =========================================
 # DASHBOARD HEADER
 # =========================================
-st.title(f"User Analytics Dashboard: {selected_client}")
+st.title(
+    f"User Analytics Dashboard: {selected_client}"
+)
 
-address = client_row.get("address", "Unknown")
+address = client_row.get(
+    "address",
+    "Unknown"
+)
 
-lat = safe_float(client_row.get("latitude", 0))
-lon = safe_float(client_row.get("longitude", 0))
+lat = safe_float(
+    client_row.get(
+        "latitude",
+        0
+    )
+)
 
-st.caption(f"Address: {address} | Location: {lat}, {lon}")
+lon = safe_float(
+    client_row.get(
+        "longitude",
+        0
+    )
+)
+
+st.caption(
+    f"Address: {address} | Location: {lat}, {lon}"
+)
 
 # =========================================
 # PROFILE
 # =========================================
-st.header("📋 Customer Profile & Behavior")
+st.header(
+    "📋 Customer Profile & Behavior"
+)
 
 m1, m2, m3, m4 = st.columns(4)
 
-# Ambil string, jika None/nan default ke '-'
-gender_val = str(client_row.get('gender', '-'))
+gender_val = str(
+    client_row.get(
+        "gender",
+        "-"
+    )
+)
 
 m1.metric(
     "Age / Gender",
@@ -306,7 +484,12 @@ m2.metric(
 
 m3.metric(
     "Credit Score",
-    safe_int(client_row.get('credit_score', 0))
+    safe_int(
+        client_row.get(
+            "credit_score",
+            0
+        )
+    )
 )
 
 m4.metric(
@@ -346,20 +529,45 @@ col_left, col_right = st.columns(2)
 
 with col_left:
 
-    st.subheader("Lifestyle Scoring")
+    st.subheader(
+        "Lifestyle Scoring"
+    )
 
     categories = [
-        'Travel',
-        'Dining',
-        'Digital',
-        'Luxury'
+        "Travel",
+        "Dining",
+        "Digital",
+        "Luxury"
     ]
 
     scores = [
-        safe_float(client_row.get('travel_score', 0)),
-        safe_float(client_row.get('dining_score', 0)),
-        safe_float(client_row.get('digital_score', 0)),
-        safe_float(client_row.get('luxury_score', 0))
+        safe_float(
+            client_row.get(
+                "travel_score",
+                0
+            )
+        ),
+
+        safe_float(
+            client_row.get(
+                "dining_score",
+                0
+            )
+        ),
+
+        safe_float(
+            client_row.get(
+                "digital_score",
+                0
+            )
+        ),
+
+        safe_float(
+            client_row.get(
+                "luxury_score",
+                0
+            )
+        )
     ]
 
     fig_radar = go.Figure()
@@ -368,7 +576,7 @@ with col_left:
         go.Scatterpolar(
             r=scores,
             theta=categories,
-            fill='toself'
+            fill="toself"
         )
     )
 
@@ -376,30 +584,63 @@ with col_left:
         polar=dict(
             radialaxis=dict(
                 visible=True,
-                range=[0, max(scores) + 1]
+                range=[
+                    0,
+                    max(scores) + 1
+                ]
             )
         ),
         showlegend=False
     )
 
-    st.plotly_chart(fig_radar, use_container_width=True)
+    st.plotly_chart(
+        fig_radar,
+        use_container_width=True
+    )
 
 with col_right:
 
-    st.subheader("Transaction DNA")
+    st.subheader(
+        "Transaction DNA"
+    )
 
     dna_data = pd.DataFrame({
+
         "Metric": [
             "Weekend %",
             "Night %",
             "Merchant Diversity",
             "Essential Ratio"
         ],
+
         "Value": [
-            safe_float(client_row.get('weekend_transaction_ratio', 0)),
-            safe_float(client_row.get('night_transaction_ratio', 0)),
-            safe_float(client_row.get('merchant_diversity_score', 0)),
-            safe_float(client_row.get('essential_spend_ratio', 0))
+            safe_float(
+                client_row.get(
+                    "weekend_transaction_ratio",
+                    0
+                )
+            ),
+
+            safe_float(
+                client_row.get(
+                    "night_transaction_ratio",
+                    0
+                )
+            ),
+
+            safe_float(
+                client_row.get(
+                    "merchant_diversity_score",
+                    0
+                )
+            ),
+
+            safe_float(
+                client_row.get(
+                    "essential_spend_ratio",
+                    0
+                )
+            )
         ]
     })
 
@@ -408,32 +649,58 @@ with col_right:
         x="Metric",
         y="Value",
         color="Metric",
-        text_auto='.2f'
+        text_auto=".2f"
     )
 
-    st.plotly_chart(fig_bar, use_container_width=True)
+    st.plotly_chart(
+        fig_bar,
+        use_container_width=True
+    )
 
 # =========================================
 # FRAUD SECTION
 # =========================================
 st.divider()
 
-st.header("🚨 Fraud & Risk Behavior Analysis")
+st.header(
+    "🚨 Fraud & Risk Behavior Analysis"
+)
 
-# 1. KPI Top Row (Status & Primary Metrics)
 f1, f2, f3 = st.columns(3)
-fraud_ratio = safe_float(client_row.get('fraud_ratio', 0))
-fraud_status = "⚠️ HIGH RISK" if fraud_ratio > 0.05 else "✅ LOW RISK"
-color = "#FF4B4B" if fraud_ratio > 0.05 else "#00CC96"
 
-f1.markdown(f"### Status: <span style='color:{color}'>{fraud_status}</span>", unsafe_allow_html=True)
+fraud_ratio = safe_float(
+    client_row.get(
+        "fraud_ratio",
+        0
+    )
+)
+
+fraud_status = (
+    "⚠️ HIGH RISK"
+    if fraud_ratio > 0.05
+    else "✅ LOW RISK"
+)
+
+color = (
+    "#FF4B4B"
+    if fraud_ratio > 0.05
+    else "#00CC96"
+)
+
+f1.markdown(
+    f"### Status: <span style='color:{color}'>{fraud_status}</span>",
+    unsafe_allow_html=True
+)
+
 f2.metric(
     "Fraud Ratio",
-    f"{safe_float(client_row.get('fraud_ratio', 0)):.2%}"
+    f"{fraud_ratio:.2%}"
 )
-f3.metric("Overall Error Ratio", f"{safe_float(client_row.get('error_ratio', 0)):.2%}")
 
-
+f3.metric(
+    "Overall Error Ratio",
+    f"{safe_float(client_row.get('error_ratio', 0)):.2%}"
+)
 
 f01, f02, f03 = st.columns(3)
 
@@ -452,54 +719,124 @@ f03.metric(
     f"${safe_float(client_row.get('avg_fraud_amount', 0)):,.2f}"
 )
 
-
-# 2. Detail Analysis
+# =========================================
+# DETAIL ANALYSIS
+# =========================================
 col_left, col_right = st.columns([1, 1])
 
 with col_left:
-    st.subheader("🔐 Authentication Failures")
-    # Mapping data untuk chart
+
+    st.subheader(
+        "🔐 Authentication Failures"
+    )
+
     auth_data = {
-        "CVV": safe_int(client_row.get('bad_cvv_count')),
-        "Card Num": safe_int(client_row.get('bad_card_number_count')),
-        "Exp Date": safe_int(client_row.get('bad_expiration_count')),
-        "PIN": safe_int(client_row.get('bad_pin_count')),
-        "Zipcode": safe_int(client_row.get('bad_zipcode_count'))
+
+        "CVV":
+            safe_int(
+                client_row.get(
+                    "bad_cvv_count"
+                )
+            ),
+
+        "Card Num":
+            safe_int(
+                client_row.get(
+                    "bad_card_number_count"
+                )
+            ),
+
+        "Exp Date":
+            safe_int(
+                client_row.get(
+                    "bad_expiration_count"
+                )
+            ),
+
+        "PIN":
+            safe_int(
+                client_row.get(
+                    "bad_pin_count"
+                )
+            ),
+
+        "Zipcode":
+            safe_int(
+                client_row.get(
+                    "bad_zipcode_count"
+                )
+            )
     }
-    
-    # Plotly Horizontal Bar
-    fig_auth = go.Figure(go.Bar(
-        x=list(auth_data.values()),
-        y=list(auth_data.keys()),
-        orientation='h',
-        marker_color='royalblue'
-    ))
-    fig_auth.update_layout(height=300, margin=dict(l=20, r=20, t=20, b=20))
-    st.plotly_chart(fig_auth, use_container_width=True)
+
+    fig_auth = go.Figure(
+        go.Bar(
+            x=list(auth_data.values()),
+            y=list(auth_data.keys()),
+            orientation="h",
+            marker_color="royalblue"
+        )
+    )
+
+    fig_auth.update_layout(
+        height=300,
+        margin=dict(
+            l=20,
+            r=20,
+            t=20,
+            b=20
+        )
+    )
+
+    st.plotly_chart(
+        fig_auth,
+        use_container_width=True
+    )
 
 with col_right:
-    st.subheader("📉 Operational & Stress Indicators")
-    
-    # Menggunakan columns kecil untuk metrik rasio
+
+    st.subheader(
+        "📉 Operational & Stress Indicators"
+    )
+
     m1, m2 = st.columns(2)
-    m1.metric("Insufficient Bal. Ratio", f"{safe_float(client_row.get('insufficient_balance_ratio', 0)):.2%}")
-    m2.metric("Tech Glitch Ratio", f"{safe_float(client_row.get('technical_glitch_ratio', 0)):.2%}")
-    
-    # Penjelasan Tambahan
+
+    m1.metric(
+        "Insufficient Bal. Ratio",
+        f"{safe_float(client_row.get('insufficient_balance_ratio', 0)):.2%}"
+    )
+
+    m2.metric(
+        "Tech Glitch Ratio",
+        f"{safe_float(client_row.get('technical_glitch_ratio', 0)):.2%}"
+    )
+
     st.info(f"""
-    **Contextual Flags:**
-    - Insufficient Balance: {safe_int(client_row.get('insufficient_balance_count'))} times
-    - Technical Glitches: {safe_int(client_row.get('technical_glitch_count'))} occurrences
-    - Auth Errors: {safe_int(client_row.get('auth_error_count'))} total
-    """)
+**Contextual Flags:**
+- Insufficient Balance: {safe_int(client_row.get('insufficient_balance_count'))} times
+- Technical Glitches: {safe_int(client_row.get('technical_glitch_count'))} occurrences
+- Auth Errors: {safe_int(client_row.get('auth_error_count'))} total
+""")
 
-# 3. Transaction Behavior (Expander tetap dipertahankan untuk detail)
-with st.expander("🔍 Deep Dive Transaction Pattern"):
+# =========================================
+# TRANSACTION PATTERN
+# =========================================
+with st.expander(
+    "🔍 Deep Dive Transaction Pattern"
+):
+
     c1, c2, c3 = st.columns(3)
-    c1.write(f"**Days Since Last Txn:** {safe_int(client_row.get('days_since_last_transaction'))} days")
-    c2.write(f"**Max Txn/Hour:** {safe_int(client_row.get('max_transactions_per_hour'))}")
-    c3.write(f"**Total Error Count:** {safe_int(client_row.get('total_error_count'))}")
 
+    c1.write(
+        f"**Days Since Last Txn:** {safe_int(client_row.get('days_since_last_transaction'))} days"
+    )
+
+    c2.write(
+        f"**Max Txn/Hour:** {safe_int(client_row.get('max_transactions_per_hour'))}"
+    )
+
+    c3.write(
+        f"**Total Error Count:** {safe_int(client_row.get('total_error_count'))}"
+    )
 
 # =========================================
 # AI RESULT
@@ -509,6 +846,7 @@ left, right = st.columns([2, 1])
 with left:
 
     st.subheader("🧠 AI Summary")
+
     st.write(summary)
 
     st.subheader("👤 Personas")
@@ -528,7 +866,9 @@ with right:
 # =========================================
 st.divider()
 
-st.subheader("💬 Banking AI Assistant")
+st.subheader(
+    "💬 Banking AI Assistant"
+)
 
 question = st.text_input(
     "Ask about this customer",
@@ -538,30 +878,41 @@ question = st.text_input(
 if st.button("Analyze") and question:
 
     chat_prompt = f"""
-You are a banking analyst.
-
 Customer data:
 {json.dumps(customer_data)}
 
 Question:
 {question}
 
-Answer shortly and professionally.
+Rules:
+- Answer shortly
+- Professional tone
+- Give recommendation
+- Do not assume missing data
 """
 
     with st.spinner("Thinking..."):
 
         try:
-            response = llm.invoke(chat_prompt)
+
+            response = llm.invoke(
+                chat_prompt
+            )
+
             st.write(response)
 
         except Exception as e:
-            st.error(f"LLM Error: {str(e)}")
+
+            st.error(
+                f"Ollama Error: {str(e)}"
+            )
 
 # =========================================
 # RAW TABLE
 # =========================================
-with st.expander("🔍 View Raw Features"):
+with st.expander(
+    "🔍 View Raw Features"
+):
 
     raw_df = build_raw_table(
         client_row,
