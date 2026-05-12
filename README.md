@@ -1,19 +1,40 @@
 # AI Customer Intelligence Dashboard
 
-This dashboard is designed as an AI-powered analytical tool to provide deep insights into financial behavior, transaction patterns, and customer fraud risks instantly by simply entering a Client ID.
+An AI-powered banking analytics dashboard designed to analyze customer financial behavior, detect fraud risks, and generate intelligent customer insights using Large Language Models (LLMs).
+
+The dashboard allows users to explore customer profiles, transaction behavior, spending patterns, and fraud indicators simply by entering a Client ID.
+
+---
+
+# Live Demo
+
+### Streamlit App
+https://ai-customer-intelligence.streamlit.app/
+
+### GitHub Repository
+https://github.com/bernadethgrace/-ai-customer-intelligence-dashboard
 
 ---
 
 ## Project Overview
 
-This project is an end-to-end fraud analytics dashboard designed to help analyze customer transaction behavior and identify potential fraud risks.
+This project was developed as an AI-powered customer intelligence and fraud analytics solution for banking use cases.
+
 
 The dashboard combines:
 - Customer profiling
-- Fraud behavior monitoring
-- Spending analytics
-- Transaction pattern analysis
+- Fraud risk analysis
+- Spending behavior analytics
+- Transaction monitoring
 - AI-generated customer insights
+- LLM-powered banking assistant
+
+The project focuses on:
+- Data analytics
+- Feature engineering
+- Fraud intelligence
+- Financial behavior analysis
+- AI integration in banking dashboards
 
 The project was developed as a technical assessment and portfolio project focused on data science, analytics engineering, and dashboard development.
 
@@ -43,6 +64,7 @@ Fraud-focused monitoring features including:
 - High-risk customer identification
 - Fraud transaction counts
 - Suspicious behavior indicators
+- Transaction anomaly insights
 
 ---
 
@@ -68,13 +90,32 @@ Card-related and transaction-level monitoring:
 
 ---
 
-## AI-Generated Insights
+## AI-Powered Banking Assistant
 
-Integrated LLM-based explanations for:
-- Customer behavior summaries
-- Fraud risk interpretation
-- Spending pattern explanations
-- Behavioral anomaly insights
+The dashboard includes an integrated LLM-powered assistant capable of generating:
+
+- Customer summaries
+- Fraud risk explanations
+- Behavioral insights
+- Spending pattern interpretations
+- Customer persona analysis
+
+---
+
+# Cloud Deployment Migration
+
+Initially, the application used Ollama with a local LLM setup through `app.py`.
+
+However, Ollama-based local inference could not run properly on Streamlit Community Cloud because the deployment environment does not support running local LLM servers.
+
+To make the dashboard deployable online, the architecture was migrated to use the Groq API for cloud-based inference.
+
+As part of this migration:
+
+- `app.py` was replaced with `streamlit_app.py`
+- Ollama integration was removed
+- Groq + Llama 3 integration was added
+- The application became fully compatible with Streamlit Cloud deployment
 
 ---
 
@@ -92,7 +133,8 @@ Integrated LLM-based explanations for:
 
 ## AI Integration
 - LangChain
-- Ollama LLM
+- Groq API
+- Llama 3
 
 ## Development Tools
 - VSCode
@@ -104,25 +146,36 @@ Integrated LLM-based explanations for:
 # Project Structure
 
 ```bash
-TechnicalTest-PermataBank/
+home//
+│
+├── .devcontainer/
 │
 ├── app/
-│   └── streamlit_app.py
+│   ├── streamlit_app.py
+│   ├── helper_functions.py
+│   └── utils.py
 │
 ├── data/
 │   ├── raw/
 │   └── processed/
 │
+├── docs/
+│
+├── drafts/
+│
+├── feature_store/
+│
 ├── notebooks/
 │   └── client_feature_store_v2.ipynb
 │
-├── docs/
+├── venv/
 │
-├── assets/
-│
-├── requirements.txt
+├── .gitignore
 ├── README.md
-└── .gitignore
+├── requirements.txt
+├── requirements-local.txt
+├── runtime.txt
+└── logs.log
 ```
 
 ---
@@ -165,7 +218,7 @@ Key engineered features include:
 - Savings ratio
 - Merchant category diversity
 - Transaction error frequency
-- Operational flags
+- Customer Operational flags
 
 ---
 
@@ -174,8 +227,9 @@ Key engineered features include:
 ## Clone Repository
 
 ```bash
-git clone https://github.com/bernadethgrace/fraud-detection-dashboard.git
-cd fraud-detection-dashboard
+git clone https://github.com/bernadethgrace/-ai-customer-intelligence-dashboard.git
+
+cd -ai-customer-intelligence-dashboard
 ```
 
 ---
@@ -208,22 +262,92 @@ pip install -r requirements.txt
 
 # Run the Dashboard
 
+
+### For Streamlit Cloud Deployment (Groq Version)
+
+Use this for the deployed cloud application:
+
+```bash
+pip install -r requirements.txt
+```
+
+This version uses:
+- Groq API
+- Cloud-based LLM inference
+- `streamlit_app.py`
+
+---
+
+### For Local Ollama Development
+
+Use this if you want to run the local Ollama version:
+
+```bash
+pip install -r requirements-local.txt
+```
+
+This version uses:
+- Ollama local models
+- Local LLM inference
+- `app.py`
+
+
+---
+
+# Environment Variables
+
+Create a `.env` file in the root directory:
+
+```bash
+GROQ_API_KEY=your_groq_api_key
+```
+
+Get your API key from:
+https://console.groq.com/keys
+
+---
+
+# Run the Dashboard
+
+## Streamlit Cloud / Groq Version
+
+Run the cloud-compatible version using:
+
 ```bash
 streamlit run app/streamlit_app.py
 ```
+
+This version uses:
+- Groq API
+- Cloud deployment setup
+- Streamlit Community Cloud compatible architecture
+
+---
+
+## Local Ollama Version
+
+Run the local LLM version using:
+
+```bash
+streamlit run app/app.py
+```
+
+This version uses:
+- Ollama local models
+- Local inference setup
+- Requires Ollama installed and running locally
 
 ---
 
 # Deployment
 
-The dashboard can be deployed using:
-- Streamlit Community Cloud
-- Render
-- Hugging Face Spaces
+The dashboard is deployed using Streamlit Community Cloud.
 
-Recommended platform:
+Live App:
+https://ai-customer-intelligence.streamlit.app/
 
-https://share.streamlit.io
+The migration from Ollama to Groq was necessary to support cloud deployment and online accessibility.
+
 
 ---
 
@@ -242,21 +366,33 @@ https://share.streamlit.io
 # Future Improvements
 
 Potential future enhancements:
-- Real-time fraud detection: Transitioning from batch to stream processing
-- User authentication system: Secure login for RM and CS roles
-- Database integration: Moving from static CSVs to SQL databases
-- API deployment: Serving model predictions via FastAPI
-- Chat Memory: Enabling stateful conversations for the AI Assistant
+
+- Real-time fraud detection pipeline
+- Database integration (PostgreSQL / BigQuery)
+- FastAPI model serving
+- Authentication & role management
+- RAG-based banking knowledge assistant
+- Chat memory & conversation history
+- Real-time streaming analytics
 
 ---
 
 # Author
 
-Griselda Agustina Atmadja
+**Griselda Agustina Atmadja**
+
+- Data Science & AI Enthusiast
+- Banking Analytics & Fraud Intelligence Projects
 
 ---
 
 # License
 
-This project is intended for educational, portfolio, and technical assessment purposes.
+This project is intended for:
+
+- Educational purposes
+- Portfolio showcase
+- Technical assessments
+- AI & analytics demonstrations
+```
 
